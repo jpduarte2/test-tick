@@ -1,0 +1,58 @@
+name: Vigiar bilhetes
+
+on:
+  schedule:
+    # De 5 em 5 minutos. E o minimo que o GitHub permite; sob carga o
+    # agendador pode atrasar-se 10-20 minutos, nao ha volta a dar.
+    #
+    # E sempre este intervalo: e o proprio monitor.py que decide, a cada
+    # execucao, se faz so a vigia dos proximos jogos ou o reconhecimento
+    # completo do calendario. O cron do GitHub e fixo e nao da para variar.
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+# Precisamos de escrever para commitar o estado.json de volta ao repositorio.
+permissions:
+  contents: write
+
+# Se uma execucao ainda estiver a correr quando a seguinte arranca, deixamos
+# a primeira acabar: duas em paralelo dariam conflito no commit do estado.
+concurrency:
+  group: vigiar-bilhetes
+  cancel-in-progress: false
+
+jobs:
+  vigiar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verificar os jogos
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          # A janela do calendario. O resto (HORAS_RECONHECIMENTO,
+          # DIAS_RITMO_RAPIDO, MINUTOS_VIGIA_LENTA) fica nos valores por
+          # omissao do script.
+          DIAS: "180"
+        run: python monitor.py
+
+      - name: Guardar o estado
+        run: |
+          if [[ -z "$(git status --porcelain estado.json)" ]]; then
+            echo "Nada mudou."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add estado.json
+          git commit -m "Estado dos jogos [skip ci]"
+          # Outra execucao pode ter commitado entretanto; rebase e tenta de novo.
+          for i in 1 2 3; do
+            git pull --rebase --autostash && git push && exit 0
+            sleep 5
+          done
+          exit 1
