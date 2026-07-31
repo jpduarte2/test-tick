@@ -1,5 +1,19 @@
 {
+  "versao": 2,
+  "ultimo_reconhecimento": "2026-07-31T13:46:02.226287+00:00",
   "jogos": {
+    "ef4ce2d2-79c0-43ec-99a4-3ebba08f6826": {
+      "descricao": "FC Porto x FC Alverca",
+      "estado": "OPEN",
+      "jogo_em": "2026-08-09T18:00:00.000000+01:00",
+      "seguir": false
+    },
+    "fb5ef9d6-6c48-40e1-9446-09e047c11b04": {
+      "descricao": "FC Porto x FC Arouca",
+      "estado": "OPEN",
+      "jogo_em": "2026-08-23T00:00:00.000000+01:00",
+      "seguir": false
+    },
     "0bedb07a-b49e-46bf-9693-275aa4781bad": {
       "descricao": "FC Porto x Moreirense FC",
       "estado": "SCHEDULED",
@@ -12,16 +26,22 @@
       "jogo_em": "2026-09-20T00:00:00.000000+01:00",
       "seguir": true
     },
-    "910d6357-3389-4f58-a0ce-59f1065ac2c5": {
-      "descricao": "FC Porto x Estrela Amadora",
-      "estado": "SCHEDULED",
-      "jogo_em": "2026-12-13T00:00:00.000000+00:00",
-      "seguir": true
-    },
     "97c7466b-5069-4a6b-9fdd-a046702261b5": {
       "descricao": "FC Porto x Estoril Praia",
       "estado": "SCHEDULED",
       "jogo_em": "2026-11-01T00:00:00.000000+00:00",
+      "seguir": true
+    },
+    "f1d45741-7080-463d-b2e3-86ff69bb7112": {
+      "descricao": "FC Porto x Sporting CP",
+      "estado": "SCHEDULED",
+      "jogo_em": "2026-11-29T00:00:00.000000+00:00",
+      "seguir": true
+    },
+    "910d6357-3389-4f58-a0ce-59f1065ac2c5": {
+      "descricao": "FC Porto x Estrela Amadora",
+      "estado": "SCHEDULED",
+      "jogo_em": "2026-12-13T00:00:00.000000+00:00",
       "seguir": true
     },
     "c4ded238-7d1a-445a-b740-80ad88882648": {
@@ -35,26 +55,6 @@
       "estado": "SCHEDULED",
       "jogo_em": "2027-01-24T00:00:00.000000+00:00",
       "seguir": true
-    },
-    "ef4ce2d2-79c0-43ec-99a4-3ebba08f6826": {
-      "descricao": "FC Porto x FC Alverca",
-      "estado": "SCHEDULED",
-      "jogo_em": "2026-08-09T18:00:00.000000+01:00",
-      "seguir": true
-    },
-    "f1d45741-7080-463d-b2e3-86ff69bb7112": {
-      "descricao": "FC Porto x Sporting CP",
-      "estado": "SCHEDULED",
-      "jogo_em": "2026-11-29T00:00:00.000000+00:00",
-      "seguir": true
-    },
-    "fb5ef9d6-6c48-40e1-9446-09e047c11b04": {
-      "descricao": "FC Porto x FC Arouca",
-      "estado": "OPEN",
-      "jogo_em": "2026-08-23T00:00:00.000000+01:00",
-      "seguir": false
     }
-  },
-  "ultimo_reconhecimento": "2026-07-31T13:46:02.226287+00:00",
-  "versao": 2
+  }
 }
