@@ -264,8 +264,21 @@ def carregar_estado() -> dict:
 
 
 def gravar_estado(estado: dict) -> None:
+    # Os jogos vao por ordem de data e nao por id, senao o ficheiro sai baralhado
+    # aos olhos de quem o abre. E so apresentacao: o programa procura sempre pelo
+    # id. Jogos sem data legivel vao para o fim em vez de rebentar a ordenacao.
+    longe = datetime.max.replace(tzinfo=timezone.utc)
+    por_data = sorted(
+        (estado.get("jogos") or {}).items(),
+        key=lambda par: (ler_data(par[1].get("jogo_em")) or longe, par[1].get("descricao") or ""),
+    )
+    saida = {
+        "versao": estado.get("versao", VERSAO_ESTADO),
+        "ultimo_reconhecimento": estado.get("ultimo_reconhecimento"),
+        "jogos": {i: {campo: j[campo] for campo in sorted(j)} for i, j in por_data},
+    }
     ESTADO.write_text(
-        json.dumps(estado, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        json.dumps(saida, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
 

@@ -43,10 +43,11 @@ def jogo(nome: str, dias: float, estado: str = "SCHEDULED") -> dict:
 
 def api_falsa(dias: int) -> list[dict]:
     fim = monitor.agora() + timedelta(days=dias)
+    # A janela e decidida pelo servidor; um jogo sem data ainda assim vem.
     return [
         j
         for j in calendario.values()
-        if monitor.ler_data(j["localStartsAt"]) <= fim
+        if (monitor.ler_data(j["localStartsAt"]) or fim) <= fim
     ]
 
 
@@ -169,6 +170,24 @@ def testa_calendario_muda() -> None:
     verificar("aprende o jogo novo", "novo" in jogos)
 
 
+def testa_ordem_do_ficheiro() -> None:
+    print("\nOrdem dos jogos no ficheiro de estado")
+    # Os ids sao dados de proposito por ordem alfabetica contraria a das datas,
+    # para que ordenar por id de o resultado errado.
+    preparar(jogo("aaa", 90), jogo("mmm", 30), jogo("zzz", 5))
+    correr()
+    ordem = list(estado_atual()["jogos"])
+    verificar("grava por data do jogo e nao por id",
+              ordem == ["zzz", "mmm", "aaa"])
+
+    # Um jogo com data ilegivel nao pode rebentar a gravacao.
+    preparar(jogo("com-data", 10), jogo("sem-data", 20))
+    calendario["sem-data"]["localStartsAt"] = None
+    correr()
+    verificar("jogo sem data vai para o fim",
+              list(estado_atual()["jogos"]) == ["com-data", "sem-data"])
+
+
 def testa_estado_estragado() -> None:
     print("\nFicheiro de estado invalido ou de outra versao")
     for nome, conteudo in (
@@ -207,6 +226,7 @@ def main() -> int:
         testa_ritmos()
         testa_reconhecimento_periodico()
         testa_calendario_muda()
+        testa_ordem_do_ficheiro()
         testa_estado_estragado()
 
     if "--notificar" in sys.argv:
