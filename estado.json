@@ -4,9 +4,9 @@
   "jogos": {
     "ef4ce2d2-79c0-43ec-99a4-3ebba08f6826": {
       "descricao": "FC Porto x FC Alverca",
-      "estado": "OPEN",
+      "estado": "SCHEDULED",
       "jogo_em": "2026-08-09T18:00:00.000000+01:00",
-      "seguir": false
+      "seguir": true
     },
     "fb5ef9d6-6c48-40e1-9446-09e047c11b04": {
       "descricao": "FC Porto x FC Arouca",
