@@ -320,6 +320,17 @@ def e_hora_da_vigia_lenta(momento: datetime, intervalo_min: int) -> bool:
 
 
 def main() -> None:
+    # No GitHub Actions, ficar sem topico e um erro de configuracao, nao uma
+    # escolha: o unico efeito do programa e notificar. Falhamos aqui, antes de
+    # mexer no estado, senao a abertura era dada por avisada sem aviso nenhum
+    # e o jogo ficava despachado em silencio.
+    if env("GITHUB_ACTIONS") and not env("NTFY_TOPIC"):
+        raise SystemExit(
+            "NTFY_TOPIC nao esta definido. Cria o segredo em Settings >"
+            " Secrets and variables > Actions (o nome tem de ser exatamente"
+            " NTFY_TOPIC) e volta a correr."
+        )
+
     dias = env_int("DIAS", 180)
     horas_reconhecimento = env_int("HORAS_RECONHECIMENTO", 6)
     dias_rapido = env_int("DIAS_RITMO_RAPIDO", 30)

@@ -188,6 +188,34 @@ def testa_ordem_do_ficheiro() -> None:
               list(estado_atual()["jogos"]) == ["com-data", "sem-data"])
 
 
+def testa_topico_em_falta() -> None:
+    print("\nSegredo NTFY_TOPIC em falta no GitHub Actions")
+    import os
+
+    preparar(jogo("alvo", 10))
+    correr()
+    calendario["alvo"]["status"] = "OPEN"
+    antes = json.dumps(estado_atual(), sort_keys=True)
+
+    os.environ["GITHUB_ACTIONS"] = "true"
+    os.environ.pop("NTFY_TOPIC", None)
+    try:
+        rebentou = False
+        try:
+            correr()
+        except SystemExit:
+            rebentou = True
+    finally:
+        os.environ.pop("GITHUB_ACTIONS", None)
+
+    verificar("falha ruidosamente em vez de avisar so no log", rebentou)
+    verificar("nao da o jogo por avisado", json.dumps(estado_atual(), sort_keys=True) == antes)
+
+    # Fora do Actions (na tua maquina) continua a poder correr sem topico.
+    texto = correr()
+    verificar("na maquina local corre a mesma", "FC Porto" in texto)
+
+
 def testa_estado_estragado() -> None:
     print("\nFicheiro de estado invalido ou de outra versao")
     for nome, conteudo in (
@@ -227,6 +255,7 @@ def main() -> int:
         testa_reconhecimento_periodico()
         testa_calendario_muda()
         testa_ordem_do_ficheiro()
+        testa_topico_em_falta()
         testa_estado_estragado()
 
     if "--notificar" in sys.argv:
