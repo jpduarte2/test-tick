@@ -38,9 +38,9 @@
     },
     "ef4ce2d2-79c0-43ec-99a4-3ebba08f6826": {
       "descricao": "FC Porto x FC Alverca",
-      "estado": "OPEN",
+      "estado": "SCHEDULED",
       "jogo_em": "2026-08-09T18:00:00.000000+01:00",
-      "seguir": false
+      "seguir": true
     },
     "f1d45741-7080-463d-b2e3-86ff69bb7112": {
       "descricao": "FC Porto x Sporting CP",
