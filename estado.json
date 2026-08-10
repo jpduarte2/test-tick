@@ -2,12 +2,6 @@
   "versao": 2,
   "ultimo_reconhecimento": "2026-08-09T23:00:08.686660+00:00",
   "jogos": {
-    "ef4ce2d2-79c0-43ec-99a4-3ebba08f6826": {
-      "descricao": "FC Porto x FC Alverca",
-      "estado": "OPEN",
-      "jogo_em": "2026-08-09T18:00:00.000000+01:00",
-      "seguir": false
-    },
     "fb5ef9d6-6c48-40e1-9446-09e047c11b04": {
       "descricao": "FC Porto x FC Arouca",
       "estado": "OPEN",
