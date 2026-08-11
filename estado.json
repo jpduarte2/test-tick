@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-08-10T18:25:44.721365+00:00",
+  "ultimo_reconhecimento": "2026-08-11T00:37:04.829645+00:00",
   "jogos": {
     "fb5ef9d6-6c48-40e1-9446-09e047c11b04": {
       "descricao": "FC Porto x FC Arouca",
@@ -48,6 +48,12 @@
       "descricao": "FC Porto x Rio Ave FC",
       "estado": "SCHEDULED",
       "jogo_em": "2027-01-24T00:00:00.000000+00:00",
+      "seguir": true
+    },
+    "67a760a9-10bd-4e43-bd7f-35a8a7308b74": {
+      "descricao": "FC Porto x Académico",
+      "estado": "SCHEDULED",
+      "jogo_em": "2027-02-07T00:00:00.000000+00:00",
       "seguir": true
     }
   }
