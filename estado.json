@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-08-26T08:35:32.948517+00:00",
+  "ultimo_reconhecimento": "2026-08-26T15:56:21.332572+00:00",
   "jogos": {
     "0bedb07a-b49e-46bf-9693-275aa4781bad": {
       "descricao": "FC Porto x Moreirense FC",
@@ -10,9 +10,9 @@
     },
     "823fb79c-4f1e-477f-bedb-ae975fe1c51c": {
       "descricao": "FC Porto x SL Benfica",
-      "estado": "SCHEDULED",
+      "estado": "OPEN",
       "jogo_em": "2026-09-20T00:00:00.000000+01:00",
-      "seguir": true
+      "seguir": false
     },
     "97c7466b-5069-4a6b-9fdd-a046702261b5": {
       "descricao": "FC Porto x Estoril Praia",
