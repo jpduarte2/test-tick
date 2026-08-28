@@ -1,11 +1,11 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-08-28T04:04:30.938766+00:00",
+  "ultimo_reconhecimento": "2026-08-28T16:34:01.196432+00:00",
   "jogos": {
     "0bedb07a-b49e-46bf-9693-275aa4781bad": {
       "descricao": "FC Porto x Moreirense FC",
       "estado": "OPEN",
-      "jogo_em": "2026-09-06T00:00:00.000000+01:00",
+      "jogo_em": "2026-09-04T20:15:00.000000+01:00",
       "seguir": false
     },
     "823fb79c-4f1e-477f-bedb-ae975fe1c51c": {
