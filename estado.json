@@ -1,12 +1,18 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-08-29T07:22:30.959959+00:00",
+  "ultimo_reconhecimento": "2026-08-29T17:12:53.136233+00:00",
   "jogos": {
     "0bedb07a-b49e-46bf-9693-275aa4781bad": {
       "descricao": "FC Porto x Moreirense FC",
       "estado": "OPEN",
       "jogo_em": "2026-09-04T20:15:00.000000+01:00",
       "seguir": false
+    },
+    "6a50b3a5-2a09-4868-b9da-ba80098750e8": {
+      "descricao": "FC Porto x Manchester City",
+      "estado": "SCHEDULED",
+      "jogo_em": "2026-09-08T20:00:00.000000+01:00",
+      "seguir": true
     },
     "823fb79c-4f1e-477f-bedb-ae975fe1c51c": {
       "descricao": "FC Porto x SL Benfica",
