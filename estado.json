@@ -20,10 +20,22 @@
       "jogo_em": "2026-09-20T00:00:00.000000+01:00",
       "seguir": false
     },
+    "1c373175-df90-418d-9dfe-e3c6a342165f": {
+      "descricao": "FC Porto x PSV Eindhoven",
+      "estado": "SCHEDULED",
+      "jogo_em": "2026-10-20T20:00:00.000000+01:00",
+      "seguir": true
+    },
     "97c7466b-5069-4a6b-9fdd-a046702261b5": {
       "descricao": "FC Porto x Estoril Praia",
       "estado": "SCHEDULED",
       "jogo_em": "2026-11-01T00:00:00.000000+00:00",
+      "seguir": true
+    },
+    "f942302f-1745-489a-b01d-4eff1b2bd188": {
+      "descricao": "FC Porto x SSC Napoli",
+      "estado": "SCHEDULED",
+      "jogo_em": "2026-11-04T20:00:00.000000+00:00",
       "seguir": true
     },
     "f1d45741-7080-463d-b2e3-86ff69bb7112": {
@@ -42,6 +54,12 @@
       "descricao": "FC Porto x CD Nacional",
       "estado": "SCHEDULED",
       "jogo_em": "2026-12-27T00:00:00.000000+00:00",
+      "seguir": true
+    },
+    "5ac69d4b-7df4-463a-96c0-f229d6fe31b1": {
+      "descricao": "FC Porto x Slavia Praha",
+      "estado": "SCHEDULED",
+      "jogo_em": "2027-01-19T20:00:00.000000+00:00",
       "seguir": true
     },
     "dacb0d5e-1f2c-405c-91f2-1e5f4e258850": {
