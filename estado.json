@@ -22,9 +22,9 @@
     },
     "1c373175-df90-418d-9dfe-e3c6a342165f": {
       "descricao": "FC Porto x PSV Eindhoven",
-      "estado": "SCHEDULED",
+      "estado": "OPEN",
       "jogo_em": "2026-10-20T20:00:00.000000+01:00",
-      "seguir": true
+      "seguir": false
     },
     "97c7466b-5069-4a6b-9fdd-a046702261b5": {
       "descricao": "FC Porto x Estoril Praia",
