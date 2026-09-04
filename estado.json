@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-09-04T09:01:42.035015+00:00",
+  "ultimo_reconhecimento": "2026-09-04T16:56:05.860026+00:00",
   "jogos": {
     "0bedb07a-b49e-46bf-9693-275aa4781bad": {
       "descricao": "FC Porto x Moreirense FC",
@@ -25,6 +25,12 @@
       "estado": "OPEN",
       "jogo_em": "2026-10-20T20:00:00.000000+01:00",
       "seguir": false
+    },
+    "9bca93c0-0e38-438d-8bac-732baf9e8260": {
+      "descricao": "FC Porto x Académico",
+      "estado": "SCHEDULED",
+      "jogo_em": "2026-10-28T20:30:00.000000+00:00",
+      "seguir": true
     },
     "97c7466b-5069-4a6b-9fdd-a046702261b5": {
       "descricao": "FC Porto x Estoril Praia",
