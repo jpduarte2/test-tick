@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-09-03T17:21:31.112506+00:00",
+  "ultimo_reconhecimento": "2026-09-04T00:12:23.172533+00:00",
   "jogos": {
     "0bedb07a-b49e-46bf-9693-275aa4781bad": {
       "descricao": "FC Porto x Moreirense FC",
@@ -17,7 +17,7 @@
     "823fb79c-4f1e-477f-bedb-ae975fe1c51c": {
       "descricao": "FC Porto x SL Benfica",
       "estado": "OPEN",
-      "jogo_em": "2026-09-20T00:00:00.000000+01:00",
+      "jogo_em": "2026-09-20T20:30:00.000000+01:00",
       "seguir": false
     },
     "1c373175-df90-418d-9dfe-e3c6a342165f": {
@@ -29,7 +29,7 @@
     "97c7466b-5069-4a6b-9fdd-a046702261b5": {
       "descricao": "FC Porto x Estoril Praia",
       "estado": "SCHEDULED",
-      "jogo_em": "2026-11-01T00:00:00.000000+00:00",
+      "jogo_em": "2026-10-31T20:30:00.000000+00:00",
       "seguir": true
     },
     "f942302f-1745-489a-b01d-4eff1b2bd188": {
@@ -41,7 +41,7 @@
     "f1d45741-7080-463d-b2e3-86ff69bb7112": {
       "descricao": "FC Porto x Sporting CP",
       "estado": "SCHEDULED",
-      "jogo_em": "2026-11-29T00:00:00.000000+00:00",
+      "jogo_em": "2026-11-29T20:30:00.000000+00:00",
       "seguir": true
     },
     "910d6357-3389-4f58-a0ce-59f1065ac2c5": {
