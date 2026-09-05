@@ -2,12 +2,6 @@
   "versao": 2,
   "ultimo_reconhecimento": "2026-09-04T23:14:53.590571+00:00",
   "jogos": {
-    "0bedb07a-b49e-46bf-9693-275aa4781bad": {
-      "descricao": "FC Porto x Moreirense FC",
-      "estado": "OPEN",
-      "jogo_em": "2026-09-04T20:15:00.000000+01:00",
-      "seguir": false
-    },
     "6a50b3a5-2a09-4868-b9da-ba80098750e8": {
       "descricao": "FC Porto x Manchester City",
       "estado": "OPEN",
