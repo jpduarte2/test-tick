@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-09-07T22:00:10.356884+00:00",
+  "ultimo_reconhecimento": "2026-09-08T04:33:51.140439+00:00",
   "jogos": {
     "6a50b3a5-2a09-4868-b9da-ba80098750e8": {
       "descricao": "FC Porto x Manchester City",
@@ -78,6 +78,12 @@
       "descricao": "FC Porto x Casa Pia AC",
       "estado": "SCHEDULED",
       "jogo_em": "2027-02-21T00:00:00.000000+00:00",
+      "seguir": true
+    },
+    "bfcc8219-d4f1-47de-98fc-1dc7700a54d9": {
+      "descricao": "FC Porto x Marítimo Madeira",
+      "estado": "SCHEDULED",
+      "jogo_em": "2027-03-07T00:00:00.000000+00:00",
       "seguir": true
     }
   }
