@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-09-10T13:44:48.749042+00:00",
+  "ultimo_reconhecimento": "2026-09-10T19:46:37.100824+00:00",
   "jogos": {
     "823fb79c-4f1e-477f-bedb-ae975fe1c51c": {
       "descricao": "FC Porto x SL Benfica",
@@ -22,9 +22,9 @@
     },
     "97c7466b-5069-4a6b-9fdd-a046702261b5": {
       "descricao": "FC Porto x Estoril Praia",
-      "estado": "SCHEDULED",
+      "estado": "OPEN",
       "jogo_em": "2026-10-31T20:30:00.000000+00:00",
-      "seguir": true
+      "seguir": false
     },
     "f942302f-1745-489a-b01d-4eff1b2bd188": {
       "descricao": "FC Porto x SSC Napoli",
