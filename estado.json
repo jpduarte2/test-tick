@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultimo_reconhecimento": "2026-09-14T22:22:23.903141+00:00",
+  "ultimo_reconhecimento": "2026-09-15T05:26:42.950607+00:00",
   "jogos": {
     "823fb79c-4f1e-477f-bedb-ae975fe1c51c": {
       "descricao": "FC Porto x SL Benfica",
@@ -78,6 +78,12 @@
       "descricao": "FC Porto x Marítimo Madeira",
       "estado": "SCHEDULED",
       "jogo_em": "2027-03-07T00:00:00.000000+00:00",
+      "seguir": true
+    },
+    "8587eb72-98b2-4bea-94ce-f7c443891223": {
+      "descricao": "FC Porto x Gil Vicente FC",
+      "estado": "SCHEDULED",
+      "jogo_em": "2027-03-14T00:00:00.000000+00:00",
       "seguir": true
     }
   }
