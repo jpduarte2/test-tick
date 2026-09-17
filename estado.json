@@ -28,9 +28,9 @@
     },
     "f942302f-1745-489a-b01d-4eff1b2bd188": {
       "descricao": "FC Porto x SSC Napoli",
-      "estado": "SCHEDULED",
+      "estado": "OPEN",
       "jogo_em": "2026-11-04T20:00:00.000000+00:00",
-      "seguir": true
+      "seguir": false
     },
     "f1d45741-7080-463d-b2e3-86ff69bb7112": {
       "descricao": "FC Porto x Sporting CP",
