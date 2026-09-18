@@ -80,7 +80,8 @@ ESTADO = Path(__file__).with_name("estado.json")
 USER_AGENT = "fcp-bilhetes-alerta/1.0 (monitorizacao pessoal)"
 
 # O formato do estado.json. Se mudar, o ficheiro antigo e ignorado e a
-# execucao seguinte comporta-se como primeira (regista sem avisar).
+# execucao seguinte comporta-se como primeira (regista sem avisar) - salvo se
+# for de uma versao que saibamos atualizar no lugar (ver carregar_estado).
 # v3: passou a guardar os sinais de venda (venda_online, venda_publico,
 #     venda_abre_em, fases) para detetar a fase "em breve".
 VERSAO_ESTADO = 3
@@ -335,7 +336,14 @@ def carregar_estado() -> dict:
 
     if not isinstance(conteudo, dict) or not conteudo:
         return vazio
-    if conteudo.get("versao") != VERSAO_ESTADO:
+    if conteudo.get("versao") == 2:
+        # A v3 so acrescentou os sinais de venda; o resto e igual. Nao vale a
+        # pena deitar fora a memoria: sem ela, uma venda que abrisse mesmo na
+        # primeira execucao passava em silencio (o cron do GitHub chega a
+        # atrasar-se horas). Sem sinais gravados, o que aparecer e novidade.
+        print("!! Estado da versao 2; atualizo para a 3 sem perder a memoria.")
+        conteudo["versao"] = VERSAO_ESTADO
+    elif conteudo.get("versao") != VERSAO_ESTADO:
         print("!! Estado de outra versao; recomeco do zero.")
         return vazio
     jogos = conteudo.get("jogos")

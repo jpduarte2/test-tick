@@ -314,13 +314,26 @@ def testa_estado_estragado() -> None:
         ("lixo", "isto nao e json"),
         ("versao antiga", '{"id-qualquer": "SCHEDULED"}'),
         ("vazio", "{}"),
-        ("versao 2", '{"versao": 2, "jogos": {"ja-aberto": {"estado": "SCHEDULED", "seguir": true}}}'),
         ("jogos trocados", '{"versao": 3, "jogos": "isto devia ser um dict"}'),
     ):
         preparar(jogo("ja-aberto", 10, "OPEN"))
         monitor.ESTADO.write_text(conteudo, encoding="utf-8")
         correr()
         verificar(f"recomeca sem avalanche de avisos ({nome})", avisos == [])
+
+
+def testa_estado_versao_2() -> None:
+    print("\nEstado da versao 2 e aproveitado, nao deitado fora")
+    preparar(jogo("ja-aberto", 10, "OPEN"))
+    monitor.ESTADO.write_text(
+        '{"versao": 2, "ultimo_reconhecimento": null,'
+        ' "jogos": {"ja-aberto": {"estado": "SCHEDULED", "seguir": true}}}',
+        encoding="utf-8",
+    )
+    correr()
+    verificar("uma abertura logo na primeira execucao com o estado antigo e avisada",
+              avisos == ["Bilhetes a venda: FC Porto x ja-aberto"])
+    verificar("o ficheiro passa a versao 3", estado_atual()["versao"] == 3)
 
 
 def testa_notificacao_real() -> None:
@@ -351,6 +364,7 @@ def main() -> int:
         testa_ordem_do_ficheiro()
         testa_topico_em_falta()
         testa_estado_estragado()
+        testa_estado_versao_2()
 
     if "--notificar" in sys.argv:
         monitor.notificar = real_notificar

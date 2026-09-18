@@ -162,7 +162,7 @@ biblioteca padrao.
 python testar.py
 ```
 
-Corre 45 verificacoes contra um calendario inventado — sem rede e sem tocar no
+Corre 46 verificacoes contra um calendario inventado — sem rede e sem tocar no
 teu `estado.json`. Deve acabar em `Tudo certo.`
 
 Depois, uma ronda a serio contra a API do clube, sem notificar ninguem:
