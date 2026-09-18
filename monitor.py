@@ -439,9 +439,16 @@ def main() -> None:
     # que ja esta a venda.
     primeira_vez = not jogos_antes
 
+    # Uma execucao pedida a mao no GitHub ("Run workflow") faz sempre o
+    # reconhecimento completo. Quem carrega no botao quer ver o monitor a
+    # perguntar a API agora - nao a decidir pelo relogio que nao e a sua vez
+    # e sair sem fazer nada, que foi o que aconteceu na primeira vez.
+    a_pedido = env("GITHUB_EVENT_NAME") == "workflow_dispatch"
+
     ultimo = ler_data(estado.get("ultimo_reconhecimento"))
     reconhecimento = (
         primeira_vez
+        or a_pedido
         or ultimo is None
         or agora() - ultimo >= timedelta(hours=horas_reconhecimento)
     )
@@ -449,7 +456,8 @@ def main() -> None:
     seguinte = proximo_por_abrir(jogos_antes)
 
     if reconhecimento:
-        print(f"Reconhecimento: janela de {dias} dias.\n")
+        motivo = " (pedido a mao)" if a_pedido else ""
+        print(f"Reconhecimento{motivo}: janela de {dias} dias.\n")
     else:
         if seguinte is None:
             # Nada por abrir e o reconhecimento ainda nao e devido: saimos sem

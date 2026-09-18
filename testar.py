@@ -322,6 +322,24 @@ def testa_estado_estragado() -> None:
         verificar(f"recomeca sem avalanche de avisos ({nome})", avisos == [])
 
 
+def testa_execucao_a_pedido() -> None:
+    print("\nExecucao pedida a mao no GitHub faz sempre o reconhecimento")
+    import os
+
+    # Jogo longe: sem o pedido a mao, conforme o minuto, o monitor saia sem
+    # perguntar a API, e uma venda anunciada entretanto ficava por ver.
+    preparar(jogo("longe", 120))
+    correr()
+    calendario["longe"]["onlineSale"] = True
+    os.environ["GITHUB_EVENT_NAME"] = "workflow_dispatch"
+    try:
+        texto = correr()
+    finally:
+        os.environ.pop("GITHUB_EVENT_NAME", None)
+    verificar("faz o reconhecimento completo em vez de sair", "Reconhecimento (pedido a mao)" in texto)
+    verificar("e por isso apanha o 'em breve' logo", avisos == ["Venda em breve: FC Porto x longe"])
+
+
 def testa_estado_versao_2() -> None:
     print("\nEstado da versao 2 e aproveitado, nao deitado fora")
     preparar(jogo("ja-aberto", 10, "OPEN"))
@@ -365,6 +383,7 @@ def main() -> int:
         testa_topico_em_falta()
         testa_estado_estragado()
         testa_estado_versao_2()
+        testa_execucao_a_pedido()
 
     if "--notificar" in sys.argv:
         monitor.notificar = real_notificar

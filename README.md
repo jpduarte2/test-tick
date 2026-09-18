@@ -138,6 +138,10 @@ meia hora e sai de imediato nas restantes. A janela e de 10 minutos e nao de um
 minuto exato porque o cron do GitHub atrasa-se com frequencia; se exigisse o
 minuto certo, um atraso fazia saltar a ronda inteira.
 
+Uma execucao pedida a mao em **Actions > Run workflow** ignora esta regra e faz
+sempre o reconhecimento completo: quem carrega no botao quer ver o monitor a
+perguntar a API agora.
+
 Nao guardamos a hora da ultima vigia porque isso obrigaria a gravar o
 `estado.json` a cada 5 minutos — e o workflow faz commit do ficheiro sempre que
 ele muda, o que encheria o historico de commits inuteis.
@@ -162,7 +166,7 @@ biblioteca padrao.
 python testar.py
 ```
 
-Corre 46 verificacoes contra um calendario inventado — sem rede e sem tocar no
+Corre 48 verificacoes contra um calendario inventado — sem rede e sem tocar no
 teu `estado.json`. Deve acabar em `Tudo certo.`
 
 Depois, uma ronda a serio contra a API do clube, sem notificar ninguem:
