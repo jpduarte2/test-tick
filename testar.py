@@ -25,7 +25,8 @@ import monitor
 
 falhas: list[str] = []
 calendario: dict[str, dict] = {}
-avisos: list[str] = []
+avisos: list[str] = []      # titulos das notificacoes, por ordem
+mensagens: list[str] = []   # e os corpos, na mesma ordem
 
 
 def jogo(nome: str, dias: float, estado: str = "SCHEDULED") -> dict:
@@ -35,6 +36,11 @@ def jogo(nome: str, dias: float, estado: str = "SCHEDULED") -> dict:
         "status": estado,
         "localStartsAt": quando.isoformat(),
         "isDateConfirmed": True,
+        # Sinais de venda, todos a zero: e assim que um jogo marcado chega.
+        "onlineSale": False,
+        "allowPublicPurchase": False,
+        "localSaleStartsAt": None,
+        "salePhases": [],
         "competition": {"name": "Teste"},
         "homeTeam": {"shortName": "FC Porto"},
         "awayTeam": {"shortName": nome},
@@ -51,8 +57,9 @@ def api_falsa(dias: int) -> list[dict]:
     ]
 
 
-def notificar_falso(titulo: str, mensagem: str, url: str) -> None:
+def notificar_falso(titulo: str, mensagem: str, url: str, prioridade: str = "urgent") -> None:
     avisos.append(titulo)
+    mensagens.append(mensagem)
 
 
 def correr() -> str:
@@ -81,6 +88,7 @@ def preparar(*jogos: dict) -> None:
     for j in jogos:
         calendario[j["id"]] = j
     avisos.clear()
+    mensagens.clear()
     monitor.ESTADO.unlink(missing_ok=True)
 
 
@@ -107,6 +115,79 @@ def testa_abertura() -> None:
     verificar("nao repete o aviso", len(avisos) == 1)
     verificar("marca o jogo como despachado",
               estado_atual()["jogos"]["alvo"]["seguir"] is False)
+
+
+def testa_em_breve() -> None:
+    print("\nVenda em breve: avisa quando o clube prepara a venda, e depois quando abre")
+    # Todos os jogos daqui ficam a 30 dias ou menos: mais longe entra-se no
+    # ritmo lento, que so corre em certos minutos, e o teste dependia da hora.
+    preparar(jogo("alvo", 20))
+    correr()
+    verificar("silencio enquanto nao ha sinais de venda", avisos == [])
+
+    calendario["alvo"]["onlineSale"] = True
+    correr()
+    verificar("avisa quando o onlineSale liga",
+              avisos == ["Venda em breve: FC Porto x alvo"])
+    verificar("diz que ainda nao ha data", "ainda sem data" in mensagens[-1])
+    verificar("grava o sinal no estado",
+              estado_atual()["jogos"]["alvo"]["venda_online"] is True)
+
+    calendario["alvo"]["allowPublicPurchase"] = True
+    correr()
+    correr()
+    verificar("nao repete o aviso quando liga mais um booleano", len(avisos) == 1)
+
+    abre = monitor.agora() + timedelta(days=2)
+    calendario["alvo"]["localSaleStartsAt"] = abre.isoformat()
+    correr()
+    verificar("volta a avisar quando aparece a data de abertura",
+              len(avisos) == 2 and avisos[-1].startswith("Venda em breve (nova data)"))
+    verificar("a mensagem traz a data",
+              f"Venda abre a {abre.strftime('%d/%m/%Y as %H:%M')}" in mensagens[-1])
+    correr()
+    verificar("nao repete a data", len(avisos) == 2)
+
+    calendario["alvo"]["status"] = "OPEN"
+    correr()
+    verificar("avisa da abertura como sempre",
+              len(avisos) == 3 and avisos[-1] == "Bilhetes a venda: FC Porto x alvo")
+    verificar("e deixa de seguir o jogo",
+              estado_atual()["jogos"]["alvo"]["seguir"] is False)
+
+    print("\nOutros sinais de 'em breve'")
+    preparar(jogo("fases", 15))
+    correr()
+    calendario["fases"]["salePhases"] = [
+        {"description": "Socios", "startDate": abre.isoformat()},
+        {"description": "Publico", "startDate": None},
+    ]
+    correr()
+    verificar("as fases de venda tambem contam como anuncio", len(avisos) == 1)
+    verificar("a mensagem lista as fases",
+              "Socios:" in mensagens[-1] and "Publico: data por anunciar" in mensagens[-1])
+
+    preparar(jogo("so-data", 15))
+    correr()
+    calendario["so-data"]["localSaleStartsAt"] = abre.isoformat()
+    correr()
+    verificar("a data de abertura sozinha tambem conta", len(avisos) == 1)
+
+    print("\nJogos que ja vem anunciados")
+    preparar(jogo("ja-anunciado", 20))
+    calendario["ja-anunciado"]["onlineSale"] = True
+    correr()
+    verificar("na primeira execucao so regista", avisos == [])
+    correr()
+    verificar("e nao avisa depois, porque nada mudou", avisos == [])
+
+    preparar(jogo("existente", 20))
+    correr()
+    calendario["novo"] = jogo("novo", 25)
+    calendario["novo"]["onlineSale"] = True
+    correr()
+    verificar("jogo novo que entra ja anunciado gera aviso",
+              avisos == ["Venda em breve: FC Porto x novo"])
 
 
 def testa_varios_ao_mesmo_tempo() -> None:
@@ -141,6 +222,17 @@ def testa_ritmos() -> None:
         errado = "lento" if esperado == "rapido" else "rapido"
         verificar(f"jogo a {dias:>3} dias -> {esperado}",
                   f"ritmo {errado}" not in texto)
+
+    # Um jogo longe mas com a abertura anunciada conta pela data da abertura.
+    for nome, dias_abre in (("daqui a 3 dias", 3), ("ja passada", -1)):
+        preparar(jogo("anunciado", 120))
+        calendario["anunciado"]["localSaleStartsAt"] = (
+            monitor.agora() + timedelta(days=dias_abre)
+        ).isoformat()
+        correr()
+        texto = correr()
+        verificar(f"jogo a 120 dias com abertura {nome} -> rapido",
+                  "ritmo rapido" in texto)
 
 
 def testa_reconhecimento_periodico() -> None:
@@ -222,7 +314,8 @@ def testa_estado_estragado() -> None:
         ("lixo", "isto nao e json"),
         ("versao antiga", '{"id-qualquer": "SCHEDULED"}'),
         ("vazio", "{}"),
-        ("jogos trocados", '{"versao": 2, "jogos": "isto devia ser um dict"}'),
+        ("versao 2", '{"versao": 2, "jogos": {"ja-aberto": {"estado": "SCHEDULED", "seguir": true}}}'),
+        ("jogos trocados", '{"versao": 3, "jogos": "isto devia ser um dict"}'),
     ):
         preparar(jogo("ja-aberto", 10, "OPEN"))
         monitor.ESTADO.write_text(conteudo, encoding="utf-8")
@@ -249,6 +342,7 @@ def main() -> int:
         monitor.ESTADO = Path(pasta) / "estado-de-teste.json"
         testa_primeira_execucao()
         testa_abertura()
+        testa_em_breve()
         testa_varios_ao_mesmo_tempo()
         testa_jogo_de_tras_da_fila()
         testa_ritmos()

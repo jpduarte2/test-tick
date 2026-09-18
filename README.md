@@ -1,8 +1,8 @@
 # Alerta de bilhetes do FC Porto
 
 Avisa no telemovel quando abre a venda de bilhetes para um jogo do **FC Porto
-em casa**. Corre no GitHub Actions de 5 em 5 minutos; nao e preciso ter o
-computador ligado.
+em casa** — e, antes disso, quando o clube a anuncia ("em breve"). Corre no
+GitHub Actions de 5 em 5 minutos; nao e preciso ter o computador ligado.
 
 ## Como funciona
 
@@ -22,8 +22,37 @@ fiavel do que procurar a palavra "COMPRAR" num botao, porque nao se parte
 quando eles mudarem o design.
 
 O `monitor.py` guarda o ultimo estado conhecido de cada jogo em `estado.json`
-e avisa quando algum passa para `OPEN`. A partir do momento em que a venda
-abre, **deixa de seguir esse jogo** — ja cumpriu o que tinha a fazer.
+e manda, no maximo, **dois avisos por jogo**:
+
+1. **"Venda em breve"** — quando o clube comeca a preparar a venda de um jogo
+   ainda `SCHEDULED`. O aviso traz a hora de abertura, se ja estiver marcada.
+   Se essa data aparecer ou mudar mais tarde, ha um segundo aviso "nova data";
+   fora isso, nao se repete.
+2. **"Bilhetes a venda"** — quando o jogo passa a `OPEN`. A partir dai
+   **deixa de seguir esse jogo** — ja cumpriu o que tinha a fazer.
+
+### O que e, afinal, o "Em breve"
+
+O `status` nao tem nenhum valor intermedio: o jogo esta `SCHEDULED` ate ao
+instante em que fica `OPEN`. O separador **"Em breve"** do site tambem nao
+ajuda — e um filtro da API (`saleStatus: COMING_SOON`) que devolve
+simplesmente *todos* os jogos `SCHEDULED`, do proximo ao de maio.
+
+O que muda de verdade, e que o site usa para mostrar o botao "A venda em
+breve" no cartao do jogo e a secao "Fases de venda" na pagina do jogo, sao
+outros campos do mesmo objeto:
+
+| Campo | O que significa |
+|-------|-----------------|
+| `onlineSale` | venda online ligada — o cartao ganha o botao "A venda em breve" |
+| `allowPublicPurchase` | venda ao publico (nao so a socios) |
+| `localSaleStartsAt` | hora agendada da abertura — o `status` passa a `OPEN` **exatamente** a essa hora (o PSV, marcado para as 15:00, foi apanhado `OPEN` as 15:04) |
+| `salePhases` | fases de venda com descricao e data ("Socios", "Publico"...), que a pagina do jogo lista como "A venda a <data>" |
+
+Qualquer destes sinais chega para o jogo passar a "em breve". Confirmou-se
+ao vivo: a 18 de setembro de 2026, o Academico de 28/10 estava `SCHEDULED`
+com `localSaleStartsAt` marcado para as 17:00 desse mesmo dia e os dois
+booleanos ligados — horas antes de abrir.
 
 Filtramos do lado do servidor com `sport: FOOTBALL` e `locationTypes: [HOME]`.
 Na API o futebol da equipa B, dos sub-19 e feminino sao desportos diferentes
@@ -36,19 +65,19 @@ ou as provas europeias; entram sozinhas.
 ## Porque nao vigia tudo ao mesmo ritmo
 
 Nao vale a pena perguntar de 5 em 5 minutos pelo jogo de dezembro. O problema e
-que **a API nao da qualquer aviso previo** de quando a venda abre:
-
-- o `localSaleStartsAt` vem `null` em todos os jogos e so aparece *depois* de
-  a venda abrir;
-- o `salePhases` vem sempre vazio;
-- o `allowPublicPurchase` e o `onlineSale` mudam ao mesmo tempo que o `status`.
+que **a API so avisa quando o clube quer**: enquanto o clube nao prepara a
+venda, o `localSaleStartsAt` vem `null`, o `salePhases` vazio e o
+`allowPublicPurchase` e o `onlineSale` desligados, em todos os jogos por abrir.
+E quando os preenche, pode ser com pouca antecedencia (no Academico de 28/10
+foi no proprio dia da abertura).
 
 Resta perguntar amiude. A questao e quando.
 
 ### Com que antecedencia abre a venda, na pratica
 
-O `localSaleStartsAt` e inutil para prever, mas serve para *medir*: fica
-registado depois de a venda abrir. Nos 27 jogos em casa da epoca 2025/26:
+Quando o `localSaleStartsAt` aparece antes da abertura, e o proprio aviso "em
+breve" que trata dele. Mas serve tambem para *medir*: fica registado depois de
+a venda abrir. Nos 27 jogos em casa da epoca 2025/26:
 
 | | Dias entre a abertura e o jogo |
 |---|---|
@@ -70,7 +99,7 @@ fixo e nao da para agendar de forma dinamica):
 | | Quando |
 |---|--------|
 | **Reconhecimento** | de 6 em 6 horas, aconteca o que acontecer |
-| **Vigia rapida** | de 5 em 5 minutos, quando o proximo jogo por abrir e daqui a **30 dias ou menos** |
+| **Vigia rapida** | de 5 em 5 minutos, quando o proximo jogo por abrir e daqui a **30 dias ou menos** — ou quando ha um jogo com **hora de abertura anunciada**, seja o jogo quando for |
 | **Vigia lenta** | de 30 em 30 minutos, quando ainda falta mais tempo |
 
 Em qualquer dos casos pergunta-se o **calendario inteiro** e detetam-se
@@ -133,7 +162,7 @@ biblioteca padrao.
 python testar.py
 ```
 
-Corre 20 verificacoes contra um calendario inventado — sem rede e sem tocar no
+Corre 45 verificacoes contra um calendario inventado — sem rede e sem tocar no
 teu `estado.json`. Deve acabar em `Tudo certo.`
 
 Depois, uma ronda a serio contra a API do clube, sem notificar ninguem:
@@ -209,7 +238,8 @@ Passados uns minutos:
 - O **historico de commits** tem entradas `Estado dos jogos [skip ci]` pelo
   menos de 6 em 6 horas. Se passar um dia inteiro sem nenhum, algo esta mal.
 - O `estado.json` no repositorio deve ter os jogos em casa todos, com
-  `"seguir": true` nos que ainda nao abriram venda.
+  `"seguir": true` nos que ainda nao abriram venda. Um jogo "em breve" tem
+  `"venda_online": true` e, se ja houver hora marcada, `"venda_abre_em"`.
 
 O teste de fogo — receber um aviso a serio — so acontece quando o clube abrir
 uma venda. Para nao ficares na duvida ate la, o passo 3 confirma a parte que
@@ -222,10 +252,12 @@ python testar.py
 ```
 
 O `testar.py` substitui a API por um calendario inventado e encena os casos que
-interessam: a venda a abrir, o aviso a nao se repetir, varios jogos a abrir ao
-mesmo tempo, a venda a abrir num jogo mais atras na fila, a escolha do ritmo, o
-reconhecimento periodico, jogos a entrar e a sair do calendario e o ficheiro de
-estado corrompido ou de outra versao.
+interessam: a venda a ser anunciada e depois a abrir (dois avisos, nem mais nem
+menos), o aviso a nao se repetir, varios jogos a abrir ao mesmo tempo, a venda
+a abrir num jogo mais atras na fila, a escolha do ritmo (incluindo o salto para
+o ritmo rapido quando ha hora de abertura anunciada), o reconhecimento
+periodico, jogos a entrar e a sair do calendario e o ficheiro de estado
+corrompido ou de outra versao.
 
 Sai com codigo de erro se alguma verificacao falhar, portanto serve tal e qual
 para um workflow de CI.
@@ -236,7 +268,10 @@ para o telemovel.
 
 Para forcar um alerta de teste com dados reais, abre o `estado.json` e num jogo
 que ja esteja a venda poe `"estado": "SCHEDULED"` e `"seguir": true`. Na
-execucao seguinte ele deteta a "abertura" e avisa.
+execucao seguinte ele deteta a "abertura" e avisa. Para testar o aviso "em
+breve", escolhe um jogo que ja tenha `"venda_online": true` mas ainda esteja
+`SCHEDULED`, e poe-lhe `"venda_online": false`, `"venda_publico": false` e
+`"venda_abre_em": null`.
 
 ## Configuracao
 
@@ -265,9 +300,9 @@ mesma execucao — perguntamos sempre o calendario completo.
   venda abre, um jogo que esgote e depois volte a ter bilhetes (`SOLD_OUT` ->
   `OPEN`) nao gera aviso. E uma escolha deliberada: o que interessa e apanhar a
   abertura.
-- **A API nao avisa com antecedencia.** Nenhum campo diz quando a venda vai
-  abrir (ver acima), por isso nao ha como preparar-se para o momento — so
-  perguntar amiude.
+- **A antecedencia do "em breve" e a que o clube quiser.** So avisamos
+  quando ele preenche os campos da venda; no Academico de 28/10 isso
+  aconteceu no proprio dia da abertura. Ate la, so perguntar amiude.
 - **O limiar dos 30 dias tem pouca folga.** Na epoca 2025/26 a antecedencia
   maxima observada foi de 30,1 dias (Estoril Praia) — dentro do limiar, mas por
   pouco. Se reparares que chegaste tarde a uma abertura, sobe o

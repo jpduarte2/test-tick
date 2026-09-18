@@ -12,8 +12,23 @@ Estados possiveis (enum MatchStatus):
     SOLD_OUT   esgotado
     FINISHED   jogo ja decorrido
 
-Avisamos quando um jogo passa para OPEN e deixamos de o seguir a partir dai:
-uma vez aberta a venda, o jogo ja nao nos interessa.
+Avisamos no maximo duas vezes por jogo:
+
+  1. "Venda em breve" - quando o clube comeca a preparar a venda de um jogo
+     ainda SCHEDULED. O `status` nao muda nessa fase, mas mudam outros campos:
+     o `onlineSale` liga (e o cartao do site ganha o botao "A venda em
+     breve"), o `allowPublicPurchase` liga, aparece o `localSaleStartsAt`
+     (a hora agendada da abertura - o status passa a OPEN exatamente a essa
+     hora) ou sao publicadas `salePhases` (a pagina do jogo passa a listar
+     "Fases de venda", cada uma com "A venda a <data>"). Qualquer destes
+     sinais chega para avisar. Se depois aparecer ou mudar uma data, avisamos
+     outra vez, so dessa.
+  2. "Bilhetes a venda" - quando passa para OPEN, tenha ou nao havido o aviso
+     "em breve" antes. E o aviso principal. So depois dele deixamos de seguir
+     o jogo: uma vez aberta a venda, nao ha mais nada para avisar.
+
+O separador "Em breve" do proprio site nao serve de sinal: e um filtro da API
+(`saleStatus: COMING_SOON`) que devolve simplesmente todos os jogos SCHEDULED.
 
 A filtragem por futebol e por jogos em casa e feita do lado do servidor, com
 os filtros `sport: FOOTBALL` e `locationTypes: [HOME]`. FOOTBALL exclui a
@@ -23,9 +38,10 @@ mas inclui todas as provas da equipa principal - liga, tacas e Europa.
 Dois ritmos
 -----------
 Nao vale a pena perguntar de 5 em 5 minutos pelo jogo de dezembro. Mas tambem
-nao da para adivinhar quando abre a venda: o `localSaleStartsAt` so aparece
-DEPOIS de abrir, o `salePhases` vem sempre vazio, e nao ha mais nenhum campo
-com aviso previo.
+nao da para adivinhar quando abre a venda: enquanto o clube nao prepara a
+venda, o `localSaleStartsAt` vem null, o `salePhases` vazio e os booleanos
+desligados. Quando os preenche pode ser com pouca antecedencia (no Academico
+de 28/10/2026 foi no proprio dia da abertura) - e ai o jogo passa a "em breve".
 
 Serve, isso sim, para medir o passado: na epoca 2025/26 as vendas abriram entre
 4,2 e 30,1 dias antes do jogo (media 12,9). Uma regra do tipo "10 dias antes"
@@ -37,6 +53,9 @@ Por isso o que varia e o ritmo, nao o que se olha:
     reconhecimento  de 6 em 6 horas, aconteca o que acontecer
     vigia           de 5 em 5 minutos se o proximo jogo por abrir for daqui a
                     menos de DIAS_RITMO_RAPIDO dias; senao de 30 em 30 minutos
+
+Um jogo com data de abertura anunciada conta pela data da abertura e nao pela
+do jogo: a partir dai sabemos quando e, e queremos la estar.
 
 Em qualquer dos casos perguntamos o calendario inteiro e detetamos aberturas em
 qualquer jogo - restringir o pedido aos jogos mais proximos so pouparia uns KB
@@ -62,7 +81,9 @@ USER_AGENT = "fcp-bilhetes-alerta/1.0 (monitorizacao pessoal)"
 
 # O formato do estado.json. Se mudar, o ficheiro antigo e ignorado e a
 # execucao seguinte comporta-se como primeira (regista sem avisar).
-VERSAO_ESTADO = 2
+# v3: passou a guardar os sinais de venda (venda_online, venda_publico,
+#     venda_abre_em, fases) para detetar a fase "em breve".
+VERSAO_ESTADO = 3
 
 QUERY = """
 query jogos($f: MatchesByDateFilters!) {
@@ -73,6 +94,10 @@ query jogos($f: MatchesByDateFilters!) {
       status
       localStartsAt
       isDateConfirmed
+      onlineSale
+      allowPublicPurchase
+      localSaleStartsAt
+      salePhases { description startDate }
       competition { name }
       homeTeam { shortName }
       awayTeam { shortName }
@@ -204,7 +229,65 @@ def quando(m: dict) -> str:
     return d.strftime("%d/%m/%Y as %H:%M")
 
 
-def notificar(titulo: str, mensagem: str, url: str) -> None:
+def formatar(d: datetime | None) -> str:
+    return d.strftime("%d/%m/%Y as %H:%M") if d else "data por anunciar"
+
+
+def sinais_de_venda(m: dict) -> dict:
+    """O que a API ja diz sobre a venda de um jogo, para alem do `status`.
+
+    Sao estes os campos que mudam quando o clube prepara a venda de um jogo
+    ainda SCHEDULED - e o que o site mostra como "A venda em breve" no cartao
+    e "Fases de venda" na pagina do jogo. Guardamo-los no estado com estes
+    mesmos nomes, para comparar de uma execucao para a outra.
+    """
+    fases = [
+        {"descricao": f.get("description") or "", "inicio": f.get("startDate")}
+        for f in (m.get("salePhases") or [])
+        if isinstance(f, dict)
+    ]
+    return {
+        "venda_online": bool(m.get("onlineSale")),
+        "venda_publico": bool(m.get("allowPublicPurchase")),
+        "venda_abre_em": m.get("localSaleStartsAt"),
+        "fases": fases,
+    }
+
+
+def anunciado(sinais: dict) -> bool:
+    """Ha algum sinal de que a venda esta a ser preparada?"""
+    return bool(
+        sinais.get("venda_online")
+        or sinais.get("venda_publico")
+        or sinais.get("venda_abre_em")
+        or sinais.get("fases")
+    )
+
+
+def datas_anunciadas(sinais: dict) -> tuple:
+    """So as datas. Depois do primeiro aviso, e so destas que voltamos a avisar."""
+    return (
+        sinais.get("venda_abre_em"),
+        tuple((f.get("descricao"), f.get("inicio")) for f in sinais.get("fases") or []),
+    )
+
+
+def mensagem_do_anuncio(j: dict, sinais: dict) -> str:
+    abre = ler_data(sinais.get("venda_abre_em"))
+    if abre:
+        linhas = [f"Venda abre a {formatar(abre)}."]
+    else:
+        linhas = ["O clube esta a preparar a venda; ainda sem data."]
+    for f in sinais.get("fases") or []:
+        linhas.append(f"{f.get('descricao') or 'Fase'}: {formatar(ler_data(f.get('inicio')))}")
+    linhas.append(f"Jogo: {quando(j)}")
+    competicao = (j.get("competition") or {}).get("name")
+    if competicao:
+        linhas.append(competicao)
+    return "\n".join(linhas)
+
+
+def notificar(titulo: str, mensagem: str, url: str, prioridade: str = "urgent") -> None:
     topico = env("NTFY_TOPIC")
     if not topico:
         print("!! NTFY_TOPIC nao definido - mostro so no log:")
@@ -217,7 +300,7 @@ def notificar(titulo: str, mensagem: str, url: str) -> None:
         data=mensagem.encode("utf-8"),
         headers={
             "Title": titulo,
-            "Priority": "urgent",
+            "Priority": prioridade,
             "Tags": "soccer,tickets",
             "Click": url,
             "User-Agent": USER_AGENT,
@@ -287,9 +370,12 @@ def proximo_por_abrir(jogos: dict) -> tuple[str, int | None] | None:
     """O jogo mais proximo cuja venda ainda nao abriu, e a quantos dias esta.
 
     E este que decide o ritmo. Jogos ja despachados (venda aberta) e jogos que
-    ja se realizaram ficam de fora. Um jogo sem data legivel vai para o fim da
-    fila mas nao e descartado, e devolve dias=None, que o chamador trata como
-    "nao sei, mais vale vigiar depressa".
+    ja se realizaram ficam de fora. Um jogo com data de abertura anunciada
+    conta pela data da abertura e nao pela do jogo: e essa que queremos
+    apanhar; se ja passou e o status ainda nao mudou, conta como "agora". Um
+    jogo sem data legivel vai para o fim da fila mas nao e descartado, e
+    devolve dias=None, que o chamador trata como "nao sei, mais vale vigiar
+    depressa".
     """
     limite = agora()
     candidatos = []
@@ -299,6 +385,9 @@ def proximo_por_abrir(jogos: dict) -> tuple[str, int | None] | None:
         d = ler_data(j.get("jogo_em"))
         if d and d < limite:
             continue
+        abre = ler_data(j.get("venda_abre_em"))
+        if abre:
+            d = max(abre, limite)
         candidatos.append((d is None, d or limite, ident))
     if not candidatos:
         return None
@@ -397,34 +486,64 @@ def main() -> None:
         estado_antes = anterior.get("estado")
         seguir = anterior.get("seguir", True)
 
+        sinais = sinais_de_venda(j)
         jogos_antes[ident] = {
             "descricao": descricao(j),
             "estado": estado_agora,
             "jogo_em": j.get("localStartsAt"),
             "seguir": seguir,
+            **sinais,
         }
-        marca = "" if seguir else "  (despachado)"
+        if not seguir:
+            marca = "  (despachado)"
+        elif estado_agora == "OPEN":
+            marca = ""
+        elif sinais["venda_abre_em"]:
+            marca = f"  (em breve: abre a {formatar(ler_data(sinais['venda_abre_em']))})"
+        elif anunciado(sinais):
+            marca = "  (em breve)"
+        else:
+            marca = ""
         print(
             f"  {descricao(j):<32} {estado_antes or '(novo)':>10}"
             f" -> {estado_agora}{marca}"
         )
 
-        if not seguir or estado_agora != "OPEN":
+        if not seguir:
+            continue
+        url = f"{SITE}/jogos/{ident}"
+
+        if estado_agora == "OPEN":
+            # A venda abriu: avisa uma vez e nunca mais. Um jogo que ja vem
+            # OPEN da primeira execucao de todas nao gera aviso; nas seguintes
+            # gera, porque ai e mesmo um jogo novo no calendario (tipico das
+            # tacas).
+            jogos_antes[ident]["seguir"] = False
+            if primeira_vez:
+                continue
+            titulo = f"Bilhetes a venda: {descricao(j)}"
+            linhas = ["Abriu a venda.", quando(j)]
+            competicao = (j.get("competition") or {}).get("name")
+            if competicao:
+                linhas.append(competicao)
+            notificar(titulo, "\n".join(linhas), url)
             continue
 
-        # A venda abriu: avisa uma vez e nunca mais. Um jogo que ja vem OPEN da
-        # primeira execucao de todas nao gera aviso; nas seguintes gera, porque
-        # ai e mesmo um jogo novo no calendario (tipico das tacas).
-        jogos_antes[ident]["seguir"] = False
-        if primeira_vez:
+        # Ainda nao abriu. Ha novidade sobre a venda? Avisamos quando o jogo
+        # passa a "em breve" e, dai em diante, so se aparecer ou mudar uma
+        # data: os booleanos podem ligar-se com minutos de diferenca e nao
+        # vale um aviso por cada um. Na primeira execucao nada e novidade.
+        # `anterior` vem vazio para um jogo novo no calendario, e um jogo que
+        # ja entra anunciado e novidade na mesma.
+        if primeira_vez or not anunciado(sinais):
             continue
-
-        titulo = f"Bilhetes a venda: {descricao(j)}"
-        linhas = ["Abriu a venda.", quando(j)]
-        competicao = (j.get("competition") or {}).get("name")
-        if competicao:
-            linhas.append(competicao)
-        notificar(titulo, "\n".join(linhas), f"{SITE}/jogos/{ident}")
+        if anunciado(anterior):
+            if datas_anunciadas(sinais) == datas_anunciadas(anterior):
+                continue
+            titulo = f"Venda em breve (nova data): {descricao(j)}"
+        else:
+            titulo = f"Venda em breve: {descricao(j)}"
+        notificar(titulo, mensagem_do_anuncio(j, sinais), url, prioridade="high")
 
     # Como perguntamos sempre o calendario todo, o que nao veio ja saiu da
     # janela (jogou-se ou foi adiado para la dos DIAS). Senao o ficheiro
@@ -442,8 +561,12 @@ def main() -> None:
     estado["jogos"] = jogos_antes
     gravar_estado(estado)
 
-    por_abrir = sum(1 for j in jogos_antes.values() if j.get("seguir", True))
-    print(f"\nEstado gravado: {len(jogos_antes)} jogos, {por_abrir} por abrir.")
+    por_abrir = [j for j in jogos_antes.values() if j.get("seguir", True)]
+    em_breve = sum(1 for j in por_abrir if anunciado(j))
+    print(
+        f"\nEstado gravado: {len(jogos_antes)} jogos, {len(por_abrir)} por abrir"
+        f" ({em_breve} em breve)."
+    )
 
 
 if __name__ == "__main__":
