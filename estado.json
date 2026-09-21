@@ -2,16 +2,6 @@
   "versao": 3,
   "ultimo_reconhecimento": "2026-09-20T21:39:07.553721+00:00",
   "jogos": {
-    "823fb79c-4f1e-477f-bedb-ae975fe1c51c": {
-      "descricao": "FC Porto x SL Benfica",
-      "estado": "OPEN",
-      "fases": [],
-      "jogo_em": "2026-09-20T20:30:00.000000+01:00",
-      "seguir": false,
-      "venda_abre_em": "2026-08-26T15:00:00.000000+01:00",
-      "venda_online": true,
-      "venda_publico": true
-    },
     "1c373175-df90-418d-9dfe-e3c6a342165f": {
       "descricao": "FC Porto x PSV Eindhoven",
       "estado": "OPEN",
