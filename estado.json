@@ -59,8 +59,8 @@
       "jogo_em": "2026-12-13T00:00:00.000000+00:00",
       "seguir": true,
       "venda_abre_em": null,
-      "venda_online": false,
-      "venda_publico": false
+      "venda_online": true,
+      "venda_publico": true
     },
     "c4ded238-7d1a-445a-b740-80ad88882648": {
       "descricao": "FC Porto x CD Nacional",
