@@ -1,6 +1,6 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-09-24T04:31:40.030649+00:00",
+  "ultimo_reconhecimento": "2026-09-24T14:20:21.488647+00:00",
   "jogos": {
     "1c373175-df90-418d-9dfe-e3c6a342165f": {
       "descricao": "FC Porto x PSV Eindhoven",
@@ -69,8 +69,8 @@
       "jogo_em": "2026-12-27T00:00:00.000000+00:00",
       "seguir": true,
       "venda_abre_em": null,
-      "venda_online": false,
-      "venda_publico": false
+      "venda_online": true,
+      "venda_publico": true
     },
     "5ac69d4b-7df4-463a-96c0-f229d6fe31b1": {
       "descricao": "FC Porto x Slavia Praha",
