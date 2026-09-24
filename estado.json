@@ -1,6 +1,6 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-09-24T14:20:21.488647+00:00",
+  "ultimo_reconhecimento": "2026-09-24T21:42:57.637302+00:00",
   "jogos": {
     "1c373175-df90-418d-9dfe-e3c6a342165f": {
       "descricao": "FC Porto x PSV Eindhoven",
@@ -54,21 +54,21 @@
     },
     "910d6357-3389-4f58-a0ce-59f1065ac2c5": {
       "descricao": "FC Porto x Estrela Amadora",
-      "estado": "SCHEDULED",
+      "estado": "OPEN",
       "fases": [],
       "jogo_em": "2026-12-13T00:00:00.000000+00:00",
-      "seguir": true,
-      "venda_abre_em": null,
+      "seguir": false,
+      "venda_abre_em": "2026-09-24T17:00:00.000000+01:00",
       "venda_online": true,
       "venda_publico": true
     },
     "c4ded238-7d1a-445a-b740-80ad88882648": {
       "descricao": "FC Porto x CD Nacional",
-      "estado": "SCHEDULED",
+      "estado": "OPEN",
       "fases": [],
       "jogo_em": "2026-12-27T00:00:00.000000+00:00",
-      "seguir": true,
-      "venda_abre_em": null,
+      "seguir": false,
+      "venda_abre_em": "2026-09-24T17:00:00.000000+01:00",
       "venda_online": true,
       "venda_publico": true
     },
