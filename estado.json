@@ -1,6 +1,6 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-10-04T21:59:45.749967+00:00",
+  "ultimo_reconhecimento": "2026-10-05T06:16:15.202082+00:00",
   "jogos": {
     "1c373175-df90-418d-9dfe-e3c6a342165f": {
       "descricao": "FC Porto x PSV Eindhoven",
@@ -127,6 +127,16 @@
       "estado": "SCHEDULED",
       "fases": [],
       "jogo_em": "2027-03-14T00:00:00.000000+00:00",
+      "seguir": true,
+      "venda_abre_em": null,
+      "venda_online": false,
+      "venda_publico": false
+    },
+    "cf5b2ba1-f8c4-45fe-a54c-14d6e556591b": {
+      "descricao": "FC Porto x Vitória SC",
+      "estado": "SCHEDULED",
+      "fases": [],
+      "jogo_em": "2027-04-04T00:00:00.000000+01:00",
       "seguir": true,
       "venda_abre_em": null,
       "venda_online": false,
