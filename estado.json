@@ -141,6 +141,16 @@
       "venda_abre_em": null,
       "venda_online": false,
       "venda_publico": false
+    },
+    "5906be27-dcc3-43cc-842b-e0ceedfc0423": {
+      "descricao": "FC Porto x Santa Clara",
+      "estado": "SCHEDULED",
+      "fases": [],
+      "jogo_em": "2027-04-18T00:00:00.000000+01:00",
+      "seguir": true,
+      "venda_abre_em": null,
+      "venda_online": false,
+      "venda_publico": false
     }
   }
 }
