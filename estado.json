@@ -1,17 +1,7 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-10-20T23:24:17.910089+00:00",
+  "ultimo_reconhecimento": "2026-10-21T06:38:32.960288+00:00",
   "jogos": {
-    "1c373175-df90-418d-9dfe-e3c6a342165f": {
-      "descricao": "FC Porto x PSV Eindhoven",
-      "estado": "OPEN",
-      "fases": [],
-      "jogo_em": "2026-10-20T20:00:00.000000+01:00",
-      "seguir": false,
-      "venda_abre_em": "2026-09-02T15:00:00.000000+01:00",
-      "venda_online": true,
-      "venda_publico": true
-    },
     "9bca93c0-0e38-438d-8bac-732baf9e8260": {
       "descricao": "FC Porto x Académico",
       "estado": "OPEN",
