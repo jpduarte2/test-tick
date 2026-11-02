@@ -131,6 +131,16 @@
       "venda_abre_em": null,
       "venda_online": false,
       "venda_publico": false
+    },
+    "65d9c4ce-ee29-4182-8186-0f16cfcd3cec": {
+      "descricao": "FC Porto x FC Famalicão",
+      "estado": "SCHEDULED",
+      "fases": [],
+      "jogo_em": "2027-05-02T00:00:00.000000+01:00",
+      "seguir": true,
+      "venda_abre_em": null,
+      "venda_online": false,
+      "venda_publico": false
     }
   }
 }
