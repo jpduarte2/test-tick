@@ -1,6 +1,6 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-11-02T20:17:00.030719+00:00",
+  "ultimo_reconhecimento": "2026-11-03T02:25:32.816784+00:00",
   "jogos": {
     "f942302f-1745-489a-b01d-4eff1b2bd188": {
       "descricao": "FC Porto x SSC Napoli",
@@ -36,7 +36,7 @@
       "descricao": "FC Porto x Estrela Amadora",
       "estado": "OPEN",
       "fases": [],
-      "jogo_em": "2026-12-13T00:00:00.000000+00:00",
+      "jogo_em": "2026-12-13T20:30:00.000000+00:00",
       "seguir": false,
       "venda_abre_em": "2026-09-24T17:00:00.000000+01:00",
       "venda_online": true,
