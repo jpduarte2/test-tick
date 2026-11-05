@@ -1,17 +1,7 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-11-04T17:34:44.953135+00:00",
+  "ultimo_reconhecimento": "2026-11-05T02:54:32.439064+00:00",
   "jogos": {
-    "f942302f-1745-489a-b01d-4eff1b2bd188": {
-      "descricao": "FC Porto x SSC Napoli",
-      "estado": "OPEN",
-      "fases": [],
-      "jogo_em": "2026-11-04T20:00:00.000000+00:00",
-      "seguir": false,
-      "venda_abre_em": "2026-09-17T16:00:00.000000+01:00",
-      "venda_online": true,
-      "venda_publico": true
-    },
     "b6667a02-caec-4acc-a84c-e0133d178e35": {
       "descricao": "FC Porto x USC Paredes",
       "estado": "SCHEDULED",
