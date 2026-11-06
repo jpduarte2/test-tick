@@ -1,6 +1,6 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-11-06T03:37:52.277635+00:00",
+  "ultimo_reconhecimento": "2026-11-06T11:28:32.067974+00:00",
   "jogos": {
     "b6667a02-caec-4acc-a84c-e0133d178e35": {
       "descricao": "FC Porto x USC Paredes",
@@ -19,7 +19,7 @@
       "jogo_em": "2026-11-29T20:30:00.000000+00:00",
       "seguir": true,
       "venda_abre_em": null,
-      "venda_online": false,
+      "venda_online": true,
       "venda_publico": false
     },
     "910d6357-3389-4f58-a0ce-59f1065ac2c5": {
