@@ -1,6 +1,6 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-11-10T11:50:56.357683+00:00",
+  "ultimo_reconhecimento": "2026-11-10T18:55:23.225709+00:00",
   "jogos": {
     "b6667a02-caec-4acc-a84c-e0133d178e35": {
       "descricao": "FC Porto x USC Paredes",
@@ -18,9 +18,9 @@
       "fases": [],
       "jogo_em": "2026-11-29T20:30:00.000000+00:00",
       "seguir": true,
-      "venda_abre_em": null,
+      "venda_abre_em": "2026-11-11T10:00:00.000000+00:00",
       "venda_online": true,
-      "venda_publico": false
+      "venda_publico": true
     },
     "910d6357-3389-4f58-a0ce-59f1065ac2c5": {
       "descricao": "FC Porto x Estrela Amadora",
