@@ -131,6 +131,16 @@
       "venda_abre_em": null,
       "venda_online": false,
       "venda_publico": false
+    },
+    "d243d205-00b1-4aad-828c-6a1ca4f26fdb": {
+      "descricao": "FC Porto x SC Braga",
+      "estado": "SCHEDULED",
+      "fases": [],
+      "jogo_em": "2027-05-16T00:00:00.000000+01:00",
+      "seguir": true,
+      "venda_abre_em": null,
+      "venda_online": false,
+      "venda_publico": false
     }
   }
 }
