@@ -1,17 +1,7 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-11-20T21:28:35.667195+00:00",
+  "ultimo_reconhecimento": "2026-11-21T10:14:55.840891+00:00",
   "jogos": {
-    "b6667a02-caec-4acc-a84c-e0133d178e35": {
-      "descricao": "FC Porto x USC Paredes",
-      "estado": "OPEN",
-      "fases": [],
-      "jogo_em": "2026-11-20T20:45:00.000000+00:00",
-      "seguir": false,
-      "venda_abre_em": "2026-11-09T15:00:00.000000+00:00",
-      "venda_online": true,
-      "venda_publico": true
-    },
     "f1d45741-7080-463d-b2e3-86ff69bb7112": {
       "descricao": "FC Porto x Sporting CP",
       "estado": "OPEN",
