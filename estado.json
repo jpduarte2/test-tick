@@ -1,6 +1,6 @@
 {
   "versao": 3,
-  "ultimo_reconhecimento": "2026-11-25T13:36:56.442498+00:00",
+  "ultimo_reconhecimento": "2026-11-25T22:43:51.307430+00:00",
   "jogos": {
     "f1d45741-7080-463d-b2e3-86ff69bb7112": {
       "descricao": "FC Porto x Sporting CP",
@@ -26,7 +26,7 @@
       "descricao": "FC Porto x CD Nacional",
       "estado": "OPEN",
       "fases": [],
-      "jogo_em": "2026-12-27T00:00:00.000000+00:00",
+      "jogo_em": "2026-12-28T20:45:00.000000+00:00",
       "seguir": false,
       "venda_abre_em": "2026-09-24T17:00:00.000000+01:00",
       "venda_online": true,
@@ -34,13 +34,13 @@
     },
     "5ac69d4b-7df4-463a-96c0-f229d6fe31b1": {
       "descricao": "FC Porto x Slavia Praha",
-      "estado": "SCHEDULED",
+      "estado": "OPEN",
       "fases": [],
       "jogo_em": "2027-01-19T20:00:00.000000+00:00",
-      "seguir": true,
-      "venda_abre_em": null,
-      "venda_online": false,
-      "venda_publico": false
+      "seguir": false,
+      "venda_abre_em": "2026-11-25T15:00:00.000000+00:00",
+      "venda_online": true,
+      "venda_publico": true
     },
     "dacb0d5e-1f2c-405c-91f2-1e5f4e258850": {
       "descricao": "FC Porto x Rio Ave FC",
